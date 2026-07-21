@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>국사봉 평가실</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root {
+  --ink: #20302B;
+  --paper: #F5F1E4;
+  --paper-card: #FFFFFF;
+  --teal: #1B4B43;
+  --teal-deep: #12332D;
+  --amber: #D9A441;
+  --amber-deep: #B9862B;
+  --line: #DDD5BE;
+  --ok: #2F6E52;
+  --no: #8C3B2E;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'IBM Plex Sans KR', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100%;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(27,75,67,0.07) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+#app { min-height: 100vh; }
+
+.shell {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ---------- banner ---------- */
+.banner {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+.banner-error { background: #FBEAE5; color: var(--no); border-color: #E4B7A8; }
+.banner-success { background: #E7F1EA; color: var(--ok); border-color: #B7D6C3; }
+
+/* ---------- hero / home ---------- */
+.hero {
+  text-align: center;
+  padding: 60px 20px 20px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  margin: 0 0 12px;
+}
+.hero .sub {
+  color: #5B6B63;
+  font-size: 16px;
+  margin-bottom: 40px;
+}
+
+.tile-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.tile {
+  width: 180px;
+  height: 180px;
+  border: 2px solid var(--teal);
+  border-radius: 14px;
+  background: var(--paper-card);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--font-body);
+  box-shadow: 0 2px 10px rgba(18,51,45,0.05);
+}
+.tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 6px 6px 0 var(--amber);
+}
+.tile-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  opacity: 0.7;
+}
+.tile-icon {
+  align-self: center;
+  color: var(--teal-deep);
+  width: 42px;
+  height: 42px;
+}
+.tile-icon svg { width: 100%; height: 100%; }
+.tile-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--paper-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 32px;
+  margin-top: 20px;
+  box-shadow: 0 2px 14px rgba(18,51,45,0.06);
+}
+.card.narrow { max-width: 440px; margin-left: auto; margin-right: auto; }
+.card.wide { max-width: 820px; }
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--teal-deep);
+  margin: 6px 0 14px;
+}
+.card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--teal-deep);
+  margin: 24px 0 10px;
+}
+.hint { color: #6A7A72; font-size: 13px; margin: -6px 0 18px; line-height: 1.5; }
+
+.back {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+}
+.back:hover { text-decoration: underline; }
+
+/* ---------- forms ---------- */
+[data-form] { display: flex; flex-direction: column; gap: 18px; }
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3E4C46;
+}
+input, select, textarea {
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background: #FCFAF3;
+  color: var(--ink);
+}
+textarea { resize: vertical; min-height: 80px; font-family: var(--font-body); }
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+  border-color: var(--amber);
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) {
+  .row2, .row3 { grid-template-columns: 1fr; }
+}
+.inline-max { max-width: 320px; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border-radius: 7px;
+  border: none;
+  font-weight: 600;
+}
+.primary {
+  background: var(--amber);
+  color: var(--teal-deep);
+  padding: 12px 20px;
+  font-size: 15px;
+  border: 2px solid var(--amber-deep);
+}
+[data-form] > .primary { margin-top: 10px; }
+.primary:hover { background: var(--amber-deep); }
+.primary.small { padding: 7px 12px; font-size: 13px; }
+.ghost {
+  background: transparent;
+  color: var(--teal);
+  border: 1.5px solid var(--teal);
+  padding: 11px 18px;
+  font-size: 14px;
+}
+.ghost:hover { background: rgba(27,75,67,0.07); }
+.ghost.small { padding: 6px 11px; font-size: 13px; }
+
+/* ---------- lists / exam cards ---------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.actions-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.list { display: flex; flex-direction: column; gap: 12px; }
+.empty {
+  padding: 30px;
+  text-align: center;
+  color: #8A9690;
+  font-size: 14px;
+  border: 1.5px dashed var(--line);
+  border-radius: 10px;
+}
+.exam-card {
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #FDFBF4;
+}
+.exam-card-main h3 { margin: 4px 0 4px; font-family: var(--font-display); font-size: 17px; color: var(--teal-deep); }
+.exam-card-main .meta { margin: 0; font-size: 12.5px; color: #74857D; }
+.exam-card-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--teal);
+  color: #F5F1E4;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal-deep);
+}
+.tag.muted { color: #A19A82; }
+
+/* ---------- exam taking ---------- */
+.timer {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--no);
+  background: #FBEAE5;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+.question {
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+.qhead { font-weight: 600; margin-bottom: 10px; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+}
+.choice:has(input:checked) { border-color: var(--amber); background: #FBF3E1; }
+
+/* ---------- results ---------- */
+.score-big {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--teal-deep);
+  margin: 10px 0 6px;
+}
+.teacher-comment {
+  background: #FBF3E1;
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.result-row {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+  font-size: 14px;
+}
+.result-row .rq { font-weight: 600; margin-bottom: 4px; }
+.result-row.ok .ra { color: var(--ok); }
+.result-row.no .ra { color: var(--no); }
+
+/* ---------- exam builder ---------- */
+.field-block { border-top: 1px solid var(--line); padding-top: 14px; }
+.label-text { font-size: 13px; font-weight: 600; color: #3E4C46; margin-bottom: 8px; }
+.check-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.check { flex-direction: row; align-items: center; gap: 6px; font-weight: 500; }
+.qbuild {
+  border: 1.5px solid var(--line);
+  border-radius: 9px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #FDFBF4;
+}
+.qbuild-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.qtext { width: 100%; margin-bottom: 10px; }
+.choice-build { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.choice-build input[type="text"], .choice-build input:not([type]) { flex: 1; }
+.choice-remove-btn {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 7px; border: 1.5px solid var(--line);
+  background: #FDFBF4; color: var(--no); font-size: 16px; font-weight: 700; cursor: pointer; line-height: 1;
+}
+.choice-remove-btn:hover { background: #FBEAE5; border-color: var(--no); }
+
+/* ---------- grading table ---------- */
+.grade-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13.5px; }
+.grade-table th, .grade-table td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; }
+.grade-table th { font-family: var(--font-mono); font-size: 11.5px; color: var(--teal); }
+.score-input { width: 64px; }
+.comment-input { width: 100%; min-width: 120px; }
+.stat-list { display: flex; flex-direction: column; gap: 6px; }
+.stat-row {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 13px;
+  border-bottom: 1px dotted var(--line); padding: 6px 2px;
+}
+
+/* ---------- 이미지 / 파일 첨부 ---------- */
+.q-image { max-width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid var(--line); display: block; }
+.img-preview { margin-bottom: 12px; }
+.img-preview img { max-width: 240px; display: block; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--line); }
+.file-label { font-size: 13px; font-weight: 600; color: #3E4C46; display: flex; flex-direction: column; gap: 6px; }
+.file-label input[type="file"] { font-size: 13px; }
+
+/* ---------- 탭 ---------- */
+.tab-row { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1.5px solid var(--line); }
+.tab-btn {
+  background: none; border: none; padding: 10px 16px; font-size: 14px; font-weight: 600;
+  color: #8A9690; cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+}
+.tab-btn.active { color: var(--teal-deep); border-bottom-color: var(--amber); }
+
+/* ---------- 과목 칩 ---------- */
+.subject-chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.subject-chip {
+  display: flex; align-items: center; gap: 6px; background: #FDFBF4; border: 1.5px solid var(--line);
+  border-radius: 20px; padding: 6px 8px 6px 14px; font-size: 13.5px; font-weight: 600; color: var(--teal-deep);
+}
+.chip-remove {
+  background: transparent; border: none; color: #A19A82; cursor: pointer; font-size: 13px;
+  width: 20px; height: 20px; border-radius: 50%; padding: 0;
+}
+.chip-remove:hover { background: #FBEAE5; color: var(--no); }
+
+/* ---------- 학년별 대상 반 ---------- */
+.grade-target-block { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+.check.small { font-size: 12.5px; font-weight: 500; }
+.sub-classes { margin: 8px 0 4px 22px; align-items: center; }
+
+/* ---------- 채점 화면 ---------- */
+.answer-block {
+  background: #FDFBF4; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
+  font-size: 14px; margin: 10px 0; line-height: 1.6;
+}
+.grade-decision-row { display: flex; gap: 10px; margin: 14px 0; }
+.decision-btn {
+  flex: 1; padding: 12px; border-radius: 8px; border: 1.5px solid var(--line); background: #FDFBF4;
+  font-weight: 600; font-size: 14px; cursor: pointer;
+}
+.decision-btn.active-ok { background: #E7F1EA; border-color: var(--ok); color: var(--ok); }
+.decision-btn.active-no { background: #FBEAE5; border-color: var(--no); color: var(--no); }
+.decision-btn.active-partial { background: #FBF3E1; border-color: var(--amber-deep); color: var(--amber-deep); }
+
+.grading-comment-block { margin-top: 22px; }
+.grading-comment-block h3 { margin-bottom: 10px; }
+.grading-finalize-btn { margin-top: 20px; }
+
+.bulk-grade-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bulk-grade-sub { font-size: 11px; color: #8A9690; }
+
+/* ---------- 논술형 채점 규칙 ---------- */
+.rule-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.rule-row {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #FDFBF4; border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 13.5px;
+}
+.rule-add-block { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.rule-add-block .row2 { margin-bottom: 12px; }
+
+/* ---------- 보기 개수 스테퍼 ---------- */
+.stepper-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+.stepper { display: flex; align-items: center; gap: 12px; }
+.stepper-btn {
+  width: 32px; height: 32px; border-radius: 7px; border: 1.5px solid var(--teal); background: var(--paper-card);
+  color: var(--teal-deep); font-size: 18px; font-weight: 700; cursor: pointer; line-height: 1;
+}
+.stepper-btn:hover { background: rgba(27,75,67,0.07); }
+.stepper-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--teal-deep); min-width: 60px; text-align: center; }
+
+/* ---------- 배점 입력(스피너 제거) ---------- */
+.no-spinner { -moz-appearance: textfield; }
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.points-field { margin-top: 18px; }
+
+/* ---------- 과목 선택 (가로형) ---------- */
+.subject-bar-list { display: flex; flex-direction: column; gap: 10px; }
+.subject-bar {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  padding: 18px 22px; border: 2px solid var(--teal); border-radius: 10px; background: var(--paper-card);
+  cursor: pointer; font-family: var(--font-body); transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.subject-bar:hover { transform: translateX(4px); box-shadow: 6px 6px 0 var(--amber); }
+.subject-bar-name { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--teal-deep); }
+.subject-bar-arrow { color: var(--amber-deep); font-size: 20px; }
+
+/* ---------- 확인 모달 ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(18,51,45,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+}
+.modal-box {
+  background: var(--paper-card); border-radius: 14px; padding: 28px; max-width: 380px; width: 100%;
+  box-shadow: 0 12px 40px rgba(18,51,45,0.25);
+}
+.modal-box h3 { font-family: var(--font-display); font-size: 20px; color: var(--teal-deep); margin: 0 0 8px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.modal-actions button { flex: 1; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- Firebase SDK (compat 버전 - 기존 코드와 바로 호환) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBoVKoCfFwYhAc_DrC63r9QvxADiTnZrmg",
+    authDomain: "kuksanongevaluation.firebaseapp.com",
+    projectId: "kuksanongevaluation",
+    storageBucket: "kuksanongevaluation.firebasestorage.app",
+    messagingSenderId: "478166409276",
+    appId: "1:478166409276:web:a03bf762919ac439d4a339"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const firebaseDb = firebase.firestore();
+  firebaseDb.settings({ ignoreUndefinedProperties: true });
+</script>
+
+<script>
+/* ===================== 과학실 시험 시스템 - 앱 로직 (v3) ===================== */
+
+const app = document.getElementById('app');
+
+const DEFAULT_CLASS_CONFIG = {
+  '1': { classes: 5, students: 25 },
+  '2': { classes: 5, students: 25 },
+  '3': { classes: 4, students: 25 },
+};
+function rangeOptions(n) {
+  return Array.from({ length: n }, (_, i) => i + 1);
+}
+
+const state = {
+  screen: 'home',
+  schoolConfig: { subjects: [], classConfig: DEFAULT_CLASS_CONFIG },
+  currentStudent: null,
+  currentSubject: null,
+  studentTab: 'exams',
+  currentAdmin: null,
+  exams: [],
+  examsLoaded: false,
+  draftExam: null,
+  gradingSub: null,
+  bulkGrading: null,
+  pendingSubmitConfirm: false,
+  activeExam: null,
+  activeSubmission: null,
+  viewExamId: null,
+  message: null,
+  timerInterval: null,
+  timerRemaining: null,
+  subAdmins: [],
+};
+
+/* ---------- storage helpers (Firebase Firestore) ---------- */
+const KV_COLLECTION = 'kv';
+async function dbGet(key) {
+  try {
+    const doc = await firebaseDb.collection(KV_COLLECTION).doc(key).get();
+    return doc.exists ? doc.data().value : null;
+  } catch (e) {
+    console.error('dbGet failed', key, e);
+    return null;
+  }
+}
+async function dbSet(key, value) {
+  try {
+    await firebaseDb.collection(KV_COLLECTION).doc(key).set({ value });
+    return true;
+  } catch (e) {
+    console.error('dbSet failed', key, e);
+    return false;
+  }
+}
+async function dbList(prefix) {
+  try {
+    const snap = await firebaseDb.collection(KV_COLLECTION)
+      .where(firebase.firestore.FieldPath.documentId(), '>=', prefix)
+      .where(firebase.firestore.FieldPath.documentId(), '<', prefix + '\uf8ff')
+      .get();
+    return snap.docs.map(d => d.id);
+  } catch (e) {
+    console.error('dbList failed', prefix, e);
+    return [];
+  }
+}
+async function dbDelete(key) {
+  try {
+    await firebaseDb.collection(KV_COLLECTION).doc(key).delete();
+  } catch (e) { /* ignore */ }
+}
+
+function studentKey(grade, cls, num) {
+  return `${grade}-${cls}-${num}`;
+}
+
+function collectFormData(container) {
+  const map = new Map();
+  const add = (name, value) => {
+    if (!map.has(name)) map.set(name, []);
+    map.get(name).push(value);
+  };
+  container.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      if (el.checked) add(el.name, el.value);
+    } else {
+      add(el.name, el.value);
+    }
+  });
+  return {
+    get(name) { const arr = map.get(name); return arr ? arr[0] : null; },
+    getAll(name) { return map.get(name) || []; },
+  };
+}
+
+function validateContainer(container) {
+  const requiredEls = container.querySelectorAll('[required]');
+  for (const el of requiredEls) {
+    if (el.checkValidity && !el.checkValidity()) {
+      el.reportValidity();
+      el.focus();
+      return false;
+    }
+  }
+  return true;
+}
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+}
+function fmtDate(ts) {
+  if (!ts) return '-';
+  const d = new Date(ts);
+  return d.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+function nowInPeriod(period) {
+  if (!period) return true;
+  const now = Date.now();
+  if (period.start && now < new Date(period.start).getTime()) return false;
+  if (period.end && now > new Date(period.end).getTime()) return false;
+  return true;
+}
+function setMsg(type, text) { state.message = { type, text }; }
+function showFatalError(err) {
+  const text = (err && err.message) ? err.message : String(err);
+  state.message = { type: 'error', text: `오류가 발생했어요: ${text}` };
+  try { render(); } catch (e2) { /* rendering itself failed */ }
+}
+window.addEventListener('error', (e) => { showFatalError(e.error || new Error(e.message)); });
+window.addEventListener('unhandledrejection', (e) => { showFatalError(e.reason instanceof Error ? e.reason : new Error(String(e.reason))); });
+
+/* ---------- data loading ---------- */
+async function loadSchoolConfig() {
+  const cfg = await dbGet('config:school');
+  state.schoolConfig = {
+    subjects: (cfg && cfg.subjects) || [],
+    classConfig: (cfg && cfg.classConfig) || DEFAULT_CLASS_CONFIG,
+  };
+}
+async function loadAllExams() {
+  const keys = await dbList('exam:');
+  const exams = [];
+  for (const k of keys) { const v = await dbGet(k); if (v) exams.push(v); }
+  exams.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  state.exams = exams;
+  state.examsLoaded = true;
+}
+async function loadSubmissionsForExam(examId) {
+  const keys = await dbList(`submission:${examId}__`);
+  const subs = [];
+  for (const k of keys) { const v = await dbGet(k); if (v) subs.push(v); }
+  subs.sort((a, b) => (a.studentKey > b.studentKey ? 1 : -1) || a.attempt - b.attempt);
+  return subs;
+}
+async function loadSubmissionsForStudentExam(examId, sKey) {
+  const keys = await dbList(`submission:${examId}__${sKey}__`);
+  const subs = [];
+  for (const k of keys) { const v = await dbGet(k); if (v) subs.push(v); }
+  subs.sort((a, b) => a.attempt - b.attempt);
+  return subs;
+}
+async function loadSubAdmins() {
+  const keys = await dbList('admin:');
+  const list = [];
+  for (const k of keys) { const v = await dbGet(k); if (v && v.role === 'sub') list.push(v); }
+  state.subAdmins = list;
+}
+
+/* ---------- exam helpers ---------- */
+function examMatchesStudent(exam, student) {
+  const targeting = exam.targeting || {};
+  const grades = Object.keys(targeting);
+  if (grades.length === 0) return true;
+  const classes = targeting[String(student.grade)];
+  if (classes === undefined) return false;
+  if (!classes || classes.length === 0) return true;
+  return classes.includes(String(student.cls));
+}
+
+function sortExamsForStudent(exams, sKey) {
+  const withPriority = exams.map(e => {
+    const subs = (e._studentSubs && e._studentSubs[sKey]) || [];
+    const solved = subs.length > 0;
+    let priority;
+    if (!solved && e.type === 'performance') priority = 0;
+    else if (!solved) priority = 1;
+    else priority = 2;
+    return { e, priority };
+  });
+  withPriority.sort((a, b) => a.priority - b.priority || (a.e.createdAt - b.e.createdAt));
+  return withPriority.map(x => x.e);
+}
+
+function examTotalPoints(exam) {
+  return exam.questions.reduce((s, q) => s + (q.points || 0), 0);
+}
+
+function keywordMatch(text, keywords, mode) {
+  if (!keywords || !keywords.length) return false;
+  const t = (text || '').toLowerCase();
+  const hits = keywords.filter(k => t.includes(String(k).toLowerCase()));
+  return mode === 'all' ? hits.length === keywords.length : hits.length > 0;
+}
+
+function gradeAnswers(exam, answers) {
+  const perQuestion = exam.questions.map((q, i) => {
+    const a = answers[i] || {};
+    if (q.type === 'essay') {
+      return { type: 'essay', text: a.text || '', isCorrect: null };
+    }
+    if (q.type === 'submission') {
+      return { type: 'submission', text: a.text || '', file: a.file || null, isCorrect: null };
+    }
+    const isCorrect = a.choice === q.correctIndex;
+    return { type: 'objective', choice: a.choice === undefined ? null : a.choice, correct: q.correctIndex, isCorrect };
+  });
+  return { perQuestion };
+}
+
+function validateQuestionData(q, idx) {
+  if (q.type === 'objective') {
+    if (q.choices.some(c => !c.trim())) return `문항 ${idx + 1}: 보기를 모두 입력해주세요.`;
+    if (!q.points || q.points <= 0) return `문항 ${idx + 1}: 배점을 입력해주세요.`;
+  } else if (q.type === 'essay') {
+    if (!(q.rules && q.rules.length) && (!q.points || q.points <= 0)) {
+      return `문항 ${idx + 1}: 채점 규칙이 없다면 배점을 입력해주세요.`;
+    }
+  } else {
+    if (!q.points || q.points <= 0) return `문항 ${idx + 1}: 배점을 입력해주세요.`;
+  }
+  return null;
+}
+
+function blankQuestion() {
+  return { type: 'objective', text: '', image: null, points: 10, choices: ['', '', '', '', ''], correctIndex: 0, rules: [] };
+}
+function blankDraftExam(mySubjects) {
+  return {
+    subject: mySubjects[0] || '', title: '', type: 'quiz',
+    targeting: {},
+    periodStart: '', periodEnd: '',
+    timerMinutes: 0,
+    questions: [blankQuestion()],
+    step: 'basic',
+  };
+}
+
+/* ---------- rendering ---------- */
+function render() {
+  app.innerHTML = screenHTML();
+  bindEvents();
+}
+function screenHTML() {
+  const msg = state.message ? `<div class="banner banner-${state.message.type}">${escapeHtml(state.message.text)}</div>` : '';
+  return `<div class="shell">${msg}${bodyForScreen()}</div>`;
+}
+function bodyForScreen() {
+  switch (state.screen) {
+    case 'home': return homeScreen();
+    case 'student-login': return studentLoginScreen();
+    case 'student-subject': return studentSubjectScreen();
+    case 'student-dashboard': return studentDashboardScreen();
+    case 'student-exam': return studentExamScreen();
+    case 'student-result': return studentResultScreen();
+    case 'admin-setup': return adminSetupScreen();
+    case 'admin-login': return adminLoginScreen();
+    case 'admin-dashboard': return adminDashboardScreen();
+    case 'admin-school-settings': return adminSchoolSettingsScreen();
+    case 'admin-exam-create': return adminExamCreateScreen();
+    case 'admin-exam-manage': return adminExamManageScreen();
+    case 'admin-grade-submission': return adminGradeSubmissionScreen();
+    case 'admin-subadmins': return adminSubAdminsScreen();
+    default: return homeScreen();
+  }
+}
+
+const ICON_STUDENT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.5 2.5 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg>`;
+const ICON_ADMIN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 12.5l2 2 4-4.5"/></svg>`;
+
+/* ---- HOME ---- */
+function homeScreen() {
+  return `
+  <div class="hero">
+    <div class="eyebrow">KUKSABONG EVALUATION CENTER</div>
+    <h1>국사봉 평가실</h1>
+    <p class="sub">퀴즈와 수행평가를 출제하고, 응시하고, 채점하는 공간입니다.</p>
+    <div class="tile-row">
+      <button class="tile" data-action="go-student">
+        <span class="tile-num">01</span><span class="tile-icon">${ICON_STUDENT}</span><span class="tile-name">학생으로 입장</span>
+      </button>
+      <button class="tile" data-action="go-admin">
+        <span class="tile-num">02</span><span class="tile-icon">${ICON_ADMIN}</span><span class="tile-name">관리자로 입장</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ---- STUDENT LOGIN ---- */
+function studentLoginScreen() {
+  const classConfig = state.schoolConfig.classConfig;
+  const grades = Object.keys(classConfig);
+  const defaultGrade = grades[0];
+  const gradeOpts = grades.map(g => `<option value="${g}">${g}학년</option>`).join('');
+  const clsOpts = rangeOptions(classConfig[defaultGrade].classes).map(c => `<option value="${c}">${c}반</option>`).join('');
+  const numOpts = rangeOptions(classConfig[defaultGrade].students).map(n => `<option value="${n}">${n}번</option>`).join('');
+  return `
+  <div class="card narrow">
+    <button class="back" data-action="go-home">← 처음으로</button>
+    <h2>학생 입장</h2>
+    <p class="hint">학년·반·번호를 선택하고 비밀번호를 입력하세요. 처음 입력하는 정보라면 그 비밀번호로 새 계정이 만들어져요.</p>
+    <div data-form="student-login">
+      <div class="row3">
+        <label>학년<select name="grade" id="sel-grade">${gradeOpts}</select></label>
+        <label>반<select name="cls" id="sel-cls">${clsOpts}</select></label>
+        <label>번호<select name="num" id="sel-num">${numOpts}</select></label>
+      </div>
+      <label>비밀번호<input required type="password" name="password" placeholder="비밀번호"></label>
+      <button type="button" class="primary" data-action="do-submit" data-target-form="student-login">입장하기</button>
+    </div>
+  </div>`;
+}
+
+/* ---- STUDENT SUBJECT PICK ---- */
+function studentSubjectScreen() {
+  const s = state.currentStudent;
+  const subjects = state.schoolConfig.subjects || [];
+  const bars = subjects.map(subj => `
+    <button class="subject-bar" data-action="pick-subject" data-subject="${escapeHtml(subj)}">
+      <span class="subject-bar-name">${escapeHtml(subj)}</span>
+      <span class="subject-bar-arrow">→</span>
+    </button>`).join('') || `<div class="empty">아직 등록된 과목이 없어요. 선생님께 문의해주세요.</div>`;
+  return `
+  <div class="card wide">
+    <div class="topbar">
+      <div><div class="eyebrow">STUDENT</div><h2>${s.grade}학년 ${s.cls}반 ${s.num}번</h2></div>
+      <button class="ghost" data-action="logout">로그아웃</button>
+    </div>
+    <h3>과목을 선택해주세요</h3>
+    <div class="subject-bar-list">${bars}</div>
+  </div>`;
+}
+
+/* ---- STUDENT DASHBOARD (시험 / 채점완료 탭) ---- */
+function studentDashboardScreen() {
+  const s = state.currentStudent;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  let exams = state.exams.filter(e => e.subject === state.currentSubject && examMatchesStudent(e, s));
+  exams = sortExamsForStudent(exams, sKey);
+  const tab = state.studentTab || 'exams';
+
+  let content;
+  if (tab === 'exams') {
+    const visible = exams.filter(e => {
+      const subs = (e._studentSubs && e._studentSubs[sKey]) || [];
+      return !subs.some(x => x.graded);
+    });
+    const rows = visible.map(examCardForStudent).join('') || `<div class="empty">이 과목에는 아직 배정된 시험이 없어요.</div>`;
+    content = `<div class="list">${rows}</div>`;
+  } else {
+    const gradedRows = exams.map(e => examCardGraded(e, sKey)).filter(Boolean).join('') || `<div class="empty">아직 채점이 완료된 시험이 없어요.</div>`;
+    content = `<div class="list">${gradedRows}</div>`;
+  }
+
+  return `
+  <div class="card wide">
+    <div class="topbar">
+      <div><div class="eyebrow">STUDENT · ${escapeHtml(state.currentSubject)}</div><h2>${s.grade}학년 ${s.cls}반 ${s.num}번</h2></div>
+      <div class="actions-row" style="margin:0;">
+        <button class="ghost small" data-action="go-student-subject">과목 변경</button>
+        <button class="ghost small" data-action="logout">로그아웃</button>
+      </div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn ${tab === 'exams' ? 'active' : ''}" data-action="student-tab" data-tab="exams">시험</button>
+      <button class="tab-btn ${tab === 'graded' ? 'active' : ''}" data-action="student-tab" data-tab="graded">채점 완료</button>
+    </div>
+    ${content}
+  </div>`;
+}
+
+function examCardForStudent(exam) {
+  const s = state.currentStudent;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  const subs = (exam._studentSubs && exam._studentSubs[sKey]) || [];
+  const attempted = subs.length > 0;
+  const inPeriod = nowInPeriod(exam.period);
+
+  let statusHtml;
+  if (!attempted) {
+    statusHtml = inPeriod
+      ? `<button class="primary small" data-action="start-exam" data-id="${exam.id}">응시하기</button>`
+      : `<span class="tag muted">응시 기간 아님</span>`;
+  } else {
+    const hasGraded = subs.some(x => x.graded);
+    statusHtml = `<span class="tag">제출완료 · ${hasGraded ? '채점완료 있음' : '채점 대기중'}</span>`;
+  }
+  return `
+  <div class="exam-card">
+    <div class="exam-card-main">
+      <span class="badge">${exam.type === 'quiz' ? '퀴즈' : '수행평가'}</span>
+      <h3>${escapeHtml(exam.title)}</h3>
+      <p class="meta">문항 ${exam.questions.length}개 ${exam.timerMinutes ? `· 제한시간 ${exam.timerMinutes}분` : ''}</p>
+    </div>
+    <div class="exam-card-actions">${statusHtml}</div>
+  </div>`;
+}
+
+function examCardGraded(exam, sKey) {
+  const subs = ((exam._studentSubs && exam._studentSubs[sKey]) || []).filter(x => x.graded);
+  if (!subs.length) return '';
+  const latest = subs[subs.length - 1];
+  return `
+  <div class="exam-card">
+    <div class="exam-card-main">
+      <span class="badge">${exam.type === 'quiz' ? '퀴즈' : '수행평가'}</span>
+      <h3>${escapeHtml(exam.title)}</h3>
+      <p class="meta">${latest.score} / ${examTotalPoints(exam)}점 · ${fmtDate(latest.gradedAt)} 채점</p>
+    </div>
+    <div class="exam-card-actions"><button class="ghost small" data-action="view-graded-result" data-id="${exam.id}">결과 보기</button></div>
+  </div>`;
+}
+
+/* ---- STUDENT EXAM (TAKING) ---- */
+function studentExamScreen() {
+  const exam = state.activeExam;
+  if (!exam) return homeScreen();
+  const qHtml = exam.questions.map((q, i) => {
+    const img = q.image ? `<img class="q-image" src="${q.image}" alt="문항 이미지">` : '';
+    let body = '';
+    if (q.type === 'objective') {
+      body = `<div class="choices">${q.choices.map((c, ci) => `
+        <label class="choice"><input type="radio" name="q${i}_choice" value="${ci}"><span>${escapeHtml(c)}</span></label>`).join('')}</div>`;
+    } else if (q.type === 'essay') {
+      body = `<textarea name="q${i}_text" rows="4" placeholder="답을 서술해주세요"></textarea>`;
+    } else {
+      body = `
+        <textarea name="q${i}_text" rows="4" placeholder="답변을 작성해주세요(선택)"></textarea>
+        <label class="file-label">파일 첨부(선택)<input type="file" data-role="submission-file" data-idx="${i}"></label>`;
+    }
+    return `<div class="question"><div class="qhead">문항 ${i + 1}. ${escapeHtml(q.text)}</div>${img}${body}</div>`;
+  }).join('');
+
+  const modal = state.pendingSubmitConfirm ? `
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <h3>정말 제출하시겠어요?</h3>
+        <p class="hint" style="margin:0;">수행평가는 제출 후에는 답을 바꿀 수 없어요.</p>
+        <div class="modal-actions">
+          <button type="button" class="ghost" data-action="cancel-submit-exam">취소</button>
+          <button type="button" class="primary" data-action="confirm-submit-exam">제출하기</button>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `
+  <div class="card wide">
+    <div class="topbar">
+      <div><div class="eyebrow">${exam.type === 'quiz' ? '퀴즈' : '수행평가'} 응시 중</div><h2>${escapeHtml(exam.title)}</h2></div>
+      ${exam.timerMinutes ? `<div class="timer" id="timer-display">--:--</div>` : ''}
+    </div>
+    <div data-form="submit-exam">
+      ${qHtml}
+      <button type="button" class="primary" data-action="do-submit" data-target-form="submit-exam">제출하기</button>
+    </div>
+  </div>
+  ${modal}`;
+}
+
+/* ---- STUDENT RESULT (채점 완료된 것만 진입) ---- */
+function studentResultScreen() {
+  const sub = state.activeSubmission;
+  const exam = state.activeExam;
+  if (!sub || !exam || !sub.graded) return homeScreen();
+  const rows = exam.questions.map((q, i) => {
+    const pq = sub.perQuestion[i];
+    const gd = sub.gradingDetail[i];
+    const label = gd.decision === 'correct' ? '✅ 정답' : gd.decision === 'partial' ? `🟡 부분정답 (${gd.awarded}점)` : '❌ 오답';
+    let answerLine;
+    if (pq.type === 'objective') {
+      answerLine = `내 답: ${q.choices[pq.choice] !== undefined ? escapeHtml(q.choices[pq.choice]) : '(미응답)'}`;
+    } else {
+      answerLine = `내 답: ${escapeHtml(pq.text || '(미응답)')}${pq.file ? ' · 첨부: ' + escapeHtml(pq.file.name) : ''}`;
+    }
+    return `<div class="result-row ${gd.decision === 'incorrect' ? 'no' : 'ok'}">
+      <div class="rq">문항 ${i + 1}. ${escapeHtml(q.text)}</div>
+      <div class="ra">${answerLine} — ${label}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="go-student-dashboard">← 목록으로</button>
+    <h2>${escapeHtml(exam.title)} 결과</h2>
+    <div class="score-big">${sub.score} / ${examTotalPoints(exam)}점</div>
+    ${sub.teacherComment ? `<div class="teacher-comment">선생님 코멘트: ${escapeHtml(sub.teacherComment)}</div>` : ''}
+    <div class="result-list">${rows}</div>
+  </div>`;
+}
+
+/* ---- ADMIN SETUP / LOGIN ---- */
+function adminSetupScreen() {
+  return `
+  <div class="card narrow">
+    <button class="back" data-action="go-home">← 처음으로</button>
+    <h2>통합 관리자 계정 만들기</h2>
+    <p class="hint">아직 관리자 계정이 없어요. 처음 사용하시는 선생님이 통합 관리자가 됩니다.</p>
+    <div data-form="admin-setup">
+      <label>아이디<input required name="username" placeholder="teacher01"></label>
+      <label>비밀번호<input required type="password" name="password"></label>
+      <label>비밀번호 확인<input required type="password" name="password2"></label>
+      <button type="button" class="primary" data-action="do-submit" data-target-form="admin-setup">통합 관리자로 시작하기</button>
+    </div>
+  </div>`;
+}
+function adminLoginScreen() {
+  return `
+  <div class="card narrow">
+    <button class="back" data-action="go-home">← 처음으로</button>
+    <h2>관리자 로그인</h2>
+    <div data-form="admin-login">
+      <label>아이디<input required name="username"></label>
+      <label>비밀번호<input required type="password" name="password"></label>
+      <button type="button" class="primary" data-action="do-submit" data-target-form="admin-login">로그인</button>
+    </div>
+  </div>`;
+}
+
+/* ---- ADMIN DASHBOARD ---- */
+function adminDashboardScreen() {
+  const a = state.currentAdmin;
+  if (a.role === 'super') {
+    return `
+    <div class="card wide">
+      <div class="topbar">
+        <div><div class="eyebrow">ADMIN · 통합 관리자</div><h2>${escapeHtml(a.username)}</h2></div>
+        <button class="ghost" data-action="logout">로그아웃</button>
+      </div>
+      <div class="actions-row">
+        <button class="primary" data-action="go-school-settings">학교 설정</button>
+        <button class="ghost" data-action="go-subadmins">서브 관리자 관리</button>
+      </div>
+      <p class="hint">통합 관리자는 시험을 직접 만들지 않아요. 서브 관리자에게 과목을 배정하면, 서브 관리자가 시험을 출제해요.</p>
+    </div>`;
+  }
+  const mySubjects = a.permissions.subjects || [];
+  const myExams = state.exams.filter(e => e.createdBy === a.username);
+  const rows = myExams.map(adminExamRow).join('') || `<div class="empty">아직 만든 시험이 없어요.</div>`;
+  return `
+  <div class="card wide">
+    <div class="topbar">
+      <div><div class="eyebrow">ADMIN · 서브 관리자</div><h2>${escapeHtml(a.username)}</h2></div>
+      <button class="ghost" data-action="logout">로그아웃</button>
+    </div>
+    <p class="hint">담당 과목: ${mySubjects.join(', ') || '(배정된 과목 없음 — 통합 관리자에게 문의해주세요)'}</p>
+    <div class="actions-row">${mySubjects.length ? `<button class="primary" data-action="new-exam">+ 새 시험 만들기</button>` : ''}</div>
+    <div class="list">${rows}</div>
+  </div>`;
+}
+
+function adminExamRow(exam) {
+  return `
+  <div class="exam-card">
+    <div class="exam-card-main">
+      <span class="badge">${exam.type === 'quiz' ? '퀴즈' : '수행평가'}</span>
+      <h3>${escapeHtml(exam.title)}</h3>
+      <p class="meta">${escapeHtml(exam.subject || '')} · 문항 ${exam.questions.length}개 · 생성 ${fmtDate(exam.createdAt)}</p>
+    </div>
+    <div class="exam-card-actions"><button class="ghost small" data-action="manage-exam" data-id="${exam.id}">채점·통계 보기</button></div>
+  </div>`;
+}
+
+/* ---- ADMIN SCHOOL SETTINGS ---- */
+function adminSchoolSettingsScreen() {
+  const cfg = state.schoolConfig;
+  const grades = ['1', '2', '3'];
+  const classRows = grades.map(g => {
+    const c = cfg.classConfig[g] || { classes: 5, students: 25 };
+    return `<div class="row2">
+      <label>${g}학년 학급 수<input type="number" min="1" name="classes_${g}" value="${c.classes}"></label>
+      <label>${g}학년 반별 번호 수<input type="number" min="1" name="students_${g}" value="${c.students}"></label>
+    </div>`;
+  }).join('');
+  const subjectChips = (cfg.subjects || []).map(s => `
+    <div class="subject-chip"><span>${escapeHtml(s)}</span><button type="button" class="chip-remove" data-action="remove-subject" data-subject="${escapeHtml(s)}">✕</button></div>
+  `).join('') || `<p class="hint">등록된 과목이 없어요.</p>`;
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="go-admin-dashboard">← 목록으로</button>
+    <h2>학교 설정</h2>
+    <div data-form="school-classes">
+      <h3>학년별 학급 구성</h3>
+      ${classRows}
+      <button type="button" class="primary" data-action="do-submit" data-target-form="school-classes">학급 구성 저장</button>
+    </div>
+    <h3>과목 목록</h3>
+    <div class="subject-chip-row">${subjectChips}</div>
+    <div class="row2" style="align-items:flex-end;">
+      <label>새 과목 이름<input id="new-subject-input" placeholder="예: 과학"></label>
+      <button type="button" class="ghost" data-action="add-subject">추가</button>
+    </div>
+  </div>`;
+}
+
+/* ---- ADMIN SUBADMINS ---- */
+function adminSubAdminsScreen() {
+  const subjects = state.schoolConfig.subjects || [];
+  const rows = state.subAdmins.map(sa => {
+    const assigned = sa.permissions.subjects || [];
+    const editChecks = subjects.map(s => `
+      <label class="check"><input type="checkbox" data-role="subadmin-subject" data-username="${escapeHtml(sa.username)}" value="${escapeHtml(s)}" ${assigned.includes(s) ? 'checked' : ''}> ${escapeHtml(s)}</label>
+    `).join('');
+    return `
+    <div class="exam-card">
+      <div class="exam-card-main">
+        <h3>${escapeHtml(sa.username)}</h3>
+        <p class="meta">담당 과목: ${assigned.join(', ') || '없음'}</p>
+        <div class="check-row">${editChecks}</div>
+      </div>
+      <div class="exam-card-actions"><button class="ghost small" data-action="save-subadmin-subjects" data-username="${escapeHtml(sa.username)}">과목 배정 저장</button></div>
+    </div>`;
+  }).join('') || `<div class="empty">아직 발급한 서브 관리자가 없어요.</div>`;
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="go-admin-dashboard">← 목록으로</button>
+    <h2>서브 관리자 관리</h2>
+    <div data-form="create-subadmin">
+      <div class="row2">
+        <label>아이디<input required name="username"></label>
+        <label>비밀번호<input required type="password" name="password"></label>
+      </div>
+      <p class="hint">계정 발급 후, 아래 목록에서 담당 과목을 배정해주세요.</p>
+      <button type="button" class="primary" data-action="do-submit" data-target-form="create-subadmin">서브 관리자 발급</button>
+    </div>
+    <h3>발급된 서브 관리자</h3>
+    <div class="list">${rows}</div>
+  </div>`;
+}
+
+/* ---- ADMIN EXAM CREATE (마법사) ---- */
+function adminExamCreateScreen() {
+  const d = state.draftExam;
+  if (d.step === 'basic') return examWizardBasicScreen(d);
+  return examWizardQuestionScreen(d, d.step);
+}
+
+function examWizardBasicScreen(d) {
+  const a = state.currentAdmin;
+  const mySubjects = a.permissions.subjects || [];
+  const subjectOpts = mySubjects.map(s => `<option value="${escapeHtml(s)}" ${d.subject === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('');
+  const grades = Object.keys(state.schoolConfig.classConfig);
+  const gradeBlocks = grades.map(g => {
+    const cfg = state.schoolConfig.classConfig[g];
+    const checked = Object.prototype.hasOwnProperty.call(d.targeting, g);
+    const selectedClasses = d.targeting[g] || [];
+    const classChecks = rangeOptions(cfg.classes).map(c => `
+      <label class="check small"><input type="checkbox" name="class_${g}" value="${c}" ${selectedClasses.includes(String(c)) ? 'checked' : ''}> ${c}반</label>
+    `).join('');
+    return `
+    <div class="grade-target-block">
+      <label class="check"><input type="checkbox" name="gradeToggle" value="${g}" data-role="grade-toggle" ${checked ? 'checked' : ''}> ${g}학년 대상</label>
+      <div class="check-row sub-classes" data-grade-classes="${g}" style="${checked ? '' : 'display:none;'}">
+        ${classChecks}
+        <span class="hint" style="margin:0;">(반을 선택 안 하면 이 학년 전체 반 대상)</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="cancel-create">← 취소</button>
+    <h2>새 시험 만들기 · 기본 정보</h2>
+    <p class="hint">기본 정보를 입력한 뒤, 다음 단계에서 문항을 한 페이지씩 만들어요.</p>
+    <div data-form="exam-basic">
+      <div class="row2">
+        <label>시험 제목<input required name="title" value="${escapeHtml(d.title)}" placeholder="예: 1학기 중간 퀴즈"></label>
+        <label>과목<select name="subject">${subjectOpts}</select></label>
+      </div>
+      <label>구분
+        <select name="type">
+          <option value="quiz" ${d.type === 'quiz' ? 'selected' : ''}>퀴즈</option>
+          <option value="performance" ${d.type === 'performance' ? 'selected' : ''}>수행평가</option>
+        </select>
+      </label>
+      <div class="field-block">
+        <div class="label-text">대상 학년·반 (아무것도 선택 안 하면 전체 대상)</div>
+        ${gradeBlocks}
+      </div>
+      <div class="row2">
+        <label>응시 시작일시(선택)<input type="datetime-local" name="periodStart" value="${d.periodStart}"></label>
+        <label>응시 종료일시(선택)<input type="datetime-local" name="periodEnd" value="${d.periodEnd}"></label>
+      </div>
+      <label class="inline-max">제한시간(분, 0=무제한)<input type="number" min="0" name="timerMinutes" value="${d.timerMinutes}"></label>
+      <button type="button" class="primary" data-action="do-submit" data-target-form="exam-basic">다음: 문항 만들기 →</button>
+    </div>
+  </div>`;
+}
+
+function examWizardQuestionScreen(d, idx) {
+  const q = d.questions[idx];
+  const total = d.questions.length;
+  const imageBlock = q.image
+    ? `<div class="img-preview"><img src="${q.image}" alt="문항 이미지"><button type="button" class="ghost small" data-action="remove-question-image">이미지 제거</button></div>`
+    : `<label class="file-label">이미지 첨부(선택, 300KB 이하 권장)<input type="file" accept="image/*" data-role="image-file"></label>`;
+
+  const pointsField = (q.type !== 'essay' || !(q.rules && q.rules.length))
+    ? `<label class="inline-max points-field">배점<input type="number" min="0" step="0.5" class="no-spinner" data-role="points" value="${q.points}"></label>`
+    : '';
+
+  let typeFields = '';
+  if (q.type === 'objective') {
+    typeFields = `
+      <div class="label-text">보기와 정답</div>
+      ${q.choices.map((c, ci) => `
+        <div class="choice-build">
+          <input type="radio" name="correct" data-role="correct" data-ci="${ci}" ${q.correctIndex === ci ? 'checked' : ''}>
+          <input data-role="choice" data-ci="${ci}" placeholder="보기 ${ci + 1}" value="${escapeHtml(c)}">
+          ${q.choices.length > 2 ? `<button type="button" class="choice-remove-btn" data-action="remove-choice" data-idx="${ci}">−</button>` : ''}
+        </div>`).join('')}
+      ${q.choices.length < 8 ? `<button type="button" class="ghost small" data-action="add-choice">+ 보기 추가</button>` : ''}`;
+  } else if (q.type === 'essay') {
+    const ruleRows = (q.rules || []).map((r, ri) => `
+      <div class="rule-row">
+        <span>${escapeHtml(r.keywords.join(', '))} → ${r.points}점</span>
+        <button type="button" class="chip-remove" data-action="remove-essay-rule" data-idx="${ri}">✕</button>
+      </div>`).join('') || `<p class="hint">아직 채점 규칙이 없어요. 규칙을 추가하지 않으면 자동 채점 없이 선생님이 직접 채점해요 — 이 경우 아래 배점 칸에 점수를 입력해주세요.</p>`;
+    const totalPts = (q.rules || []).reduce((s, r) => s + Number(r.points || 0), 0);
+    const hasRules = (q.rules || []).length > 0;
+    typeFields = `
+      <div class="label-text">채점 규칙 (선택 사항 — 키워드가 포함되면 자동으로 점수를 줘요)</div>
+      <div class="rule-list">${ruleRows}</div>
+      <div class="rule-add-block">
+        <div class="row2" style="align-items:flex-end;">
+          <label>키워드(쉼표로 여러 개 입력하면, 그 중 하나라도 있을 때 인정)<input id="essay-rule-keywords" placeholder="예: 광합성, 엽록소"></label>
+          <label style="max-width:110px;">배점<input id="essay-rule-points" type="number" min="0" step="0.5" value="10"></label>
+        </div>
+        <button type="button" class="ghost small" data-action="add-essay-rule">+ 규칙 추가</button>
+      </div>
+      ${hasRules ? `<p class="hint" style="margin-top:18px;">이 문항 총 배점(규칙들의 합, 자동 계산): ${totalPts}점</p>` : ''}`;
+  } else {
+    typeFields = `<p class="hint">학생이 글과 파일(선택)을 제출하면, 선생님이 직접 채점해요.</p>`;
+  }
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="wizard-back">← 이전</button>
+    <h2>문항 ${idx + 1} / ${total}</h2>
+    <div id="qpage-wrap" data-form="exam-question">
+      <label>문제 유형
+        <select data-role="qtype">
+          <option value="objective" ${q.type === 'objective' ? 'selected' : ''}>객관식</option>
+          <option value="essay" ${q.type === 'essay' ? 'selected' : ''}>논술형</option>
+          <option value="submission" ${q.type === 'submission' ? 'selected' : ''}>제출형</option>
+        </select>
+      </label>
+      <label>문제 내용<textarea data-role="qtext" rows="3" placeholder="문제를 입력하세요">${escapeHtml(q.text)}</textarea></label>
+      ${imageBlock}
+      ${typeFields}
+      ${pointsField}
+    </div>
+    <div class="actions-row" style="margin-top:26px;">
+      ${idx < total - 1 ? `<button type="button" class="ghost small" data-action="wizard-next-q">다음 문항 →</button>` : ''}
+      <button type="button" class="ghost small" data-action="add-question">+ 문항 추가</button>
+      ${total > 1 ? `<button type="button" class="ghost small" data-action="remove-question" data-idx="${idx}">이 문항 삭제</button>` : ''}
+      <button type="button" class="primary small" data-action="save-exam">✅ 시험 저장하기</button>
+    </div>
+  </div>`;
+}
+
+/* ---- ADMIN EXAM MANAGE ---- */
+function adminExamManageScreen() {
+  const exam = state.exams.find(e => e.id === state.viewExamId);
+  if (!exam) return adminDashboardScreen();
+  const subs = exam._allSubs || [];
+  const gradedSubs = subs.filter(s => s.graded);
+  const avg = gradedSubs.length ? Math.round(gradedSubs.reduce((s, x) => s + x.score, 0) / gradedSubs.length) : 0;
+
+  const perQStats = exam.questions.map((q, i) => {
+    const gradedAt = gradedSubs.filter(s => s.gradingDetail && s.gradingDetail[i]);
+    if (!gradedAt.length) return `<div class="stat-row"><span>문항 ${i + 1}</span><span>아직 채점된 자료 없음</span></div>`;
+    const avgAward = gradedAt.reduce((sum, s) => sum + s.gradingDetail[i].awarded, 0) / gradedAt.length;
+    const maxP = gradedAt[0].gradingDetail[i].maxPoints;
+    return `<div class="stat-row"><span>문항 ${i + 1}</span><span>평균 ${avgAward.toFixed(1)} / ${maxP.toFixed(1)}점</span></div>`;
+  }).join('');
+
+  const subRows = subs.map(s => `
+    <tr>
+      <td>${escapeHtml(s.studentKey)}</td>
+      <td>${s.attempt}회</td>
+      <td>${s.graded ? s.score + '점' : '채점 대기'}</td>
+      <td>${fmtDate(s.submittedAt)}</td>
+      <td><button class="ghost small" data-action="open-grading" data-subid="${s.id}">${s.graded ? '채점 수정' : '채점하기'}</button></td>
+    </tr>`).join('') || `<tr><td colspan="5" class="empty">아직 제출한 학생이 없어요.</td></tr>`;
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="go-admin-dashboard">← 목록으로</button>
+    <h2>${escapeHtml(exam.title)}</h2>
+    <p class="meta">${escapeHtml(exam.subject || '')} · 총 ${subs.length}건 제출 · 채점완료 ${gradedSubs.length}건 · 평균 ${avg} / ${examTotalPoints(exam)}점</p>
+    <div class="actions-row">
+      <button class="ghost small" data-action="export-csv" data-id="${exam.id}">CSV로 내보내기</button>
+      <button class="primary small" data-action="start-bulk-grading">전체 채점하기</button>
+    </div>
+    <p class="hint" style="margin-top:-8px;">전체 채점하기는 객관식을 제외한 문항만 학생 순서대로 이어서 보여줘요.</p>
+    <h3>문항별 평균 점수</h3>
+    <div class="stat-list">${perQStats}</div>
+    <h3>학생 제출/채점</h3>
+    <table class="grade-table">
+      <thead><tr><th>학생</th><th>회차</th><th>점수</th><th>제출시각</th><th></th></tr></thead>
+      <tbody>${subRows}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ---- ADMIN GRADE SUBMISSION (문항별 1페이지씩 채점) ---- */
+function adminGradeSubmissionScreen() {
+  const g = state.gradingSub;
+  const { exam, sub, grading, step } = g;
+  const q = exam.questions[step];
+  const pq = sub.perQuestion[step];
+  const gr = grading[step];
+  const total = exam.questions.length;
+  const img = q.image ? `<img class="q-image" src="${q.image}" alt="문항 이미지">` : '';
+  const canPrev = g.bulkMode ? prevReviewIndex(exam.questions, step) !== -1 : step > 0;
+  const canNext = g.bulkMode ? nextReviewIndex(exam.questions, step) !== -1 : step < total - 1;
+
+  let answerBlock = '';
+  if (pq.type === 'objective') {
+    answerBlock = `<div class="answer-block">학생 답: <strong>${q.choices[pq.choice] !== undefined ? escapeHtml(q.choices[pq.choice]) : '(미응답)'}</strong><br>정답: ${escapeHtml(q.choices[q.correctIndex])}</div>`;
+  } else if (pq.type === 'essay') {
+    const ruleHint = (q.rules || []).map(r => `${r.keywords.join('/')} (${r.points}점)`).join(', ') || '(없음)';
+    answerBlock = `<div class="answer-block">학생 답: ${escapeHtml(pq.text || '(미응답)')}</div><p class="hint">채점 규칙: ${escapeHtml(ruleHint)}</p>`;
+  } else {
+    answerBlock = `<div class="answer-block">학생 답: ${escapeHtml(pq.text || '(작성 안 함)')}</div>${pq.file ? `<p class="hint">첨부파일: <a href="${pq.file.data}" download="${escapeHtml(pq.file.name)}">${escapeHtml(pq.file.name)}</a></p>` : ''}`;
+  }
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="close-grading">← 채점 취소</button>
+    ${g.bulkMode ? `<span class="tag muted">전체 채점 진행 중 (객관식 제외)</span>` : ''}
+    <h2>${escapeHtml(sub.studentKey)} · 문항 ${step + 1} / ${total}</h2>
+    <p class="qhead">${escapeHtml(q.text)}</p>
+    ${img}
+    ${answerBlock}
+    <div class="grade-decision-row">
+      <button type="button" class="decision-btn ${gr.decision === 'correct' ? 'active-ok' : ''}" data-action="set-decision" data-decision="correct">정답</button>
+      <button type="button" class="decision-btn ${gr.decision === 'incorrect' ? 'active-no' : ''}" data-action="set-decision" data-decision="incorrect">오답</button>
+      <button type="button" class="decision-btn ${gr.decision === 'partial' ? 'active-partial' : ''}" data-action="set-decision" data-decision="partial">부분정답</button>
+    </div>
+    ${gr.decision === 'partial' ? `<label class="inline-max">부분 점수 (최대 ${gr.maxPoints.toFixed(1)}점)<input type="number" min="0" max="${gr.maxPoints}" step="0.5" id="partial-score-input" value="${gr.awarded}"></label>` : ''}
+    <div class="actions-row">
+      ${canPrev ? `<button type="button" class="ghost small" data-action="grading-prev">← 이전 문항</button>` : ''}
+      ${canNext ? `<button type="button" class="ghost small" data-action="grading-next">다음 문항 →</button>` : ''}
+    </div>
+    <div class="grading-comment-block">
+      <h3>총평(선택)</h3>
+      <textarea id="grading-comment" rows="3" placeholder="학생에게 남길 코멘트">${escapeHtml(g.comment)}</textarea>
+    </div>
+    <button type="button" class="primary grading-finalize-btn" data-action="finalize-grading">✅ 채점 완료</button>
+  </div>`;
+}
+
+function firstReviewIndex(questions) {
+  for (let i = 0; i < questions.length; i++) if (questions[i].type !== 'objective') return i;
+  return -1;
+}
+function nextReviewIndex(questions, from) {
+  for (let i = from + 1; i < questions.length; i++) if (questions[i].type !== 'objective') return i;
+  return -1;
+}
+function prevReviewIndex(questions, from) {
+  for (let i = from - 1; i >= 0; i--) if (questions[i].type !== 'objective') return i;
+  return -1;
+}
+
+/* ===================== event binding & actions ===================== */
+function bindEvents() {
+  app.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      try { await onAction(e); } catch (err) { console.error('action failed', err); showFatalError(err); }
+    });
+  });
+  const qpage = document.getElementById('qpage-wrap');
+  if (qpage) qpage.addEventListener('change', onQuestionFieldInput);
+
+  if (state.screen === 'student-login') {
+    const gradeSel = document.getElementById('sel-grade');
+    if (gradeSel) gradeSel.addEventListener('change', onStudentGradeChange);
+  }
+  if (state.screen === 'admin-exam-create' && state.draftExam.step === 'basic') {
+    const basicContainer = document.querySelector('[data-form="exam-basic"]');
+    if (basicContainer) {
+      basicContainer.addEventListener('change', (e) => {
+        if (e.target.dataset.role === 'grade-toggle') {
+          const block = basicContainer.querySelector(`[data-grade-classes="${e.target.value}"]`);
+          if (block) block.style.display = e.target.checked ? '' : 'none';
+        }
+      });
+    }
+  }
+  if (state.screen === 'admin-grade-submission') {
+    const input = document.getElementById('partial-score-input');
+    if (input) {
+      input.addEventListener('change', (e) => {
+        const g = state.gradingSub;
+        let v = Number(e.target.value);
+        if (isNaN(v)) v = 0;
+        v = Math.max(0, Math.min(g.grading[g.step].maxPoints, v));
+        g.grading[g.step].awarded = v;
+      });
+    }
+  }
+  if (state.screen === 'student-exam' && state.activeExam && state.activeExam.timerMinutes) {
+    startTimer();
+  }
+}
+
+function onStudentGradeChange(e) {
+  const g = e.target.value;
+  const cfg = state.schoolConfig.classConfig[g] || { classes: 5, students: 25 };
+  const clsSel = document.getElementById('sel-cls');
+  const numSel = document.getElementById('sel-num');
+  clsSel.innerHTML = rangeOptions(cfg.classes).map(c => `<option value="${c}">${c}반</option>`).join('');
+  numSel.innerHTML = rangeOptions(cfg.students).map(n => `<option value="${n}">${n}번</option>`).join('');
+}
+
+function onQuestionFieldInput(e) {
+  const t = e.target;
+  const role = t.dataset.role;
+  if (!role) return;
+  const d = state.draftExam;
+  const q = d.questions[d.step];
+  if (role === 'qtext') q.text = t.value;
+  else if (role === 'choice') q.choices[Number(t.dataset.ci)] = t.value;
+  else if (role === 'correct') q.correctIndex = Number(t.dataset.ci);
+  else if (role === 'points') q.points = Number(t.value) || 0;
+  else if (role === 'qtype') { q.type = t.value; render(); }
+  else if (role === 'image-file') { handleQuestionImageFile(t, q); }
+}
+
+function handleQuestionImageFile(inputEl, q) {
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return;
+  if (file.size > 300 * 1024) { setMsg('error', '이미지 용량이 너무 커요. 300KB 이하의 사진을 사용해주세요.'); render(); return; }
+  const reader = new FileReader();
+  reader.onload = () => { q.image = reader.result; render(); };
+  reader.onerror = () => { setMsg('error', '이미지를 읽는 데 실패했어요.'); render(); };
+  reader.readAsDataURL(file);
+}
+
+async function onAction(e) {
+  const el = e.currentTarget;
+  const action = el.dataset.action;
+  state.message = null;
+
+  if (action === 'go-home') { state.screen = 'home'; render(); }
+  else if (action === 'go-student') { await loadSchoolConfig(); state.screen = 'student-login'; render(); }
+  else if (action === 'go-admin') {
+    await loadSchoolConfig();
+    await loadAllExams();
+    const adminKeys = await dbList('admin:');
+    state.screen = adminKeys.length === 0 ? 'admin-setup' : 'admin-login';
+    render();
+  }
+  else if (action === 'logout') {
+    state.currentStudent = null; state.currentSubject = null; state.currentAdmin = null; state.studentTab = 'exams';
+    state.screen = 'home'; render();
+  }
+  else if (action === 'go-student-subject') { state.currentSubject = null; state.screen = 'student-subject'; render(); }
+  else if (action === 'pick-subject') {
+    state.currentSubject = el.dataset.subject; state.studentTab = 'exams';
+    await refreshExamsWithSubs(); state.screen = 'student-dashboard'; render();
+  }
+  else if (action === 'student-tab') { state.studentTab = el.dataset.tab; render(); }
+  else if (action === 'go-student-dashboard') { await refreshExamsWithSubs(); state.screen = 'student-dashboard'; render(); }
+  else if (action === 'go-admin-dashboard') { await loadAllExams(); state.screen = 'admin-dashboard'; render(); }
+  else if (action === 'go-school-settings') { await loadSchoolConfig(); state.screen = 'admin-school-settings'; render(); }
+  else if (action === 'go-subadmins') { await loadSchoolConfig(); await loadSubAdmins(); state.screen = 'admin-subadmins'; render(); }
+  else if (action === 'add-subject') {
+    const input = document.getElementById('new-subject-input');
+    const name = (input.value || '').trim();
+    if (!name) return;
+    const subjects = state.schoolConfig.subjects || [];
+    if (subjects.includes(name)) { setMsg('error', '이미 있는 과목이에요.'); render(); return; }
+    const newSubjects = [...subjects, name];
+    const ok = await dbSet('config:school', { subjects: newSubjects, classConfig: state.schoolConfig.classConfig });
+    if (!ok) { setMsg('error', '저장에 실패했어요.'); render(); return; }
+    state.schoolConfig.subjects = newSubjects;
+    setMsg('success', `"${name}" 과목을 추가했어요.`);
+    render();
+  }
+  else if (action === 'remove-subject') {
+    const name = el.dataset.subject;
+    const newSubjects = (state.schoolConfig.subjects || []).filter(s => s !== name);
+    const ok = await dbSet('config:school', { subjects: newSubjects, classConfig: state.schoolConfig.classConfig });
+    if (!ok) { setMsg('error', '저장에 실패했어요.'); render(); return; }
+    state.schoolConfig.subjects = newSubjects;
+    setMsg('success', `"${name}" 과목을 삭제했어요.`);
+    render();
+  }
+  else if (action === 'new-exam') {
+    const mySubjects = state.currentAdmin.permissions.subjects || [];
+    if (!mySubjects.length) { setMsg('error', '배정된 과목이 없어요. 통합 관리자에게 문의해주세요.'); render(); return; }
+    state.draftExam = blankDraftExam(mySubjects); state.screen = 'admin-exam-create'; render();
+  }
+  else if (action === 'cancel-create') { state.screen = 'admin-dashboard'; render(); }
+  else if (action === 'wizard-back') {
+    const d = state.draftExam; d.step = (d.step === 0) ? 'basic' : d.step - 1; render();
+  }
+  else if (action === 'wizard-next-q') {
+    const d = state.draftExam;
+    const err = validateQuestionData(d.questions[d.step], d.step);
+    if (err) { setMsg('error', err); render(); return; }
+    d.step += 1; render();
+  }
+  else if (action === 'add-question') {
+    const d = state.draftExam;
+    const err = validateQuestionData(d.questions[d.step], d.step);
+    if (err) { setMsg('error', err); render(); return; }
+    d.questions.push(blankQuestion()); d.step = d.questions.length - 1; render();
+  }
+  else if (action === 'remove-question') {
+    const d = state.draftExam; const idx = Number(el.dataset.idx);
+    d.questions.splice(idx, 1); d.step = Math.min(idx, d.questions.length - 1); render();
+  }
+  else if (action === 'remove-question-image') { state.draftExam.questions[state.draftExam.step].image = null; render(); }
+  else if (action === 'add-choice') {
+    const q = state.draftExam.questions[state.draftExam.step];
+    if (q.choices.length < 8) { q.choices.push(''); render(); }
+  }
+  else if (action === 'remove-choice') {
+    const q = state.draftExam.questions[state.draftExam.step];
+    const idx = Number(el.dataset.idx);
+    if (q.choices.length > 2) {
+      q.choices.splice(idx, 1);
+      if (q.correctIndex >= q.choices.length) q.correctIndex = 0;
+      else if (q.correctIndex > idx) q.correctIndex -= 1;
+      render();
+    }
+  }
+  else if (action === 'add-essay-rule') {
+    const q = state.draftExam.questions[state.draftExam.step];
+    const kwInput = document.getElementById('essay-rule-keywords');
+    const ptsInput = document.getElementById('essay-rule-points');
+    const kws = (kwInput.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    const pts = Number(ptsInput.value || 0);
+    if (!kws.length) { setMsg('error', '키워드를 입력해주세요.'); render(); return; }
+    if (!q.rules) q.rules = [];
+    q.rules.push({ keywords: kws, points: pts });
+    render();
+  }
+  else if (action === 'remove-essay-rule') {
+    const q = state.draftExam.questions[state.draftExam.step];
+    q.rules.splice(Number(el.dataset.idx), 1);
+    render();
+  }
+  else if (action === 'save-exam') {
+    const d = state.draftExam;
+    for (let i = 0; i < d.questions.length; i++) {
+      const err = validateQuestionData(d.questions[i], i);
+      if (err) { setMsg('error', err); d.step = i; render(); return; }
+    }
+    const examId = 'exam_' + Date.now();
+    const exam = {
+      id: examId, title: d.title, subject: d.subject, type: d.type,
+      targeting: d.targeting,
+      period: (d.periodStart || d.periodEnd) ? { start: d.periodStart || null, end: d.periodEnd || null } : null,
+      timerMinutes: d.timerMinutes,
+      questions: d.questions.map(q => ({
+        type: q.type, text: q.text, image: q.image || null,
+        points: q.type === 'essay'
+          ? ((q.rules && q.rules.length) ? q.rules.reduce((s, r) => s + Number(r.points || 0), 0) : (q.points || 0))
+          : q.points,
+        choices: q.type === 'objective' ? q.choices : undefined,
+        correctIndex: q.type === 'objective' ? q.correctIndex : undefined,
+        rules: q.type === 'essay' ? q.rules : undefined,
+      })),
+      createdBy: state.currentAdmin.username, createdAt: Date.now(),
+    };
+    const ok = await dbSet(`exam:${examId}`, exam);
+    if (!ok) { setMsg('error', '저장에 실패했어요. 다시 시도해주세요.'); render(); return; }
+    setMsg('success', '시험이 저장됐어요.');
+    await loadAllExams(); state.screen = 'admin-dashboard'; render();
+  }
+  else if (action === 'manage-exam') { await openManageExam(el.dataset.id); }
+  else if (action === 'open-grading') { await openGrading(el.dataset.subid); }
+  else if (action === 'start-bulk-grading') {
+    const exam = state.exams.find(e => e.id === state.viewExamId);
+    const ungraded = (exam._allSubs || []).filter(s => !s.graded).map(s => s.id);
+    if (!ungraded.length) { setMsg('error', '채점할 제출물이 없어요.'); render(); return; }
+    state.bulkGrading = { queue: ungraded, pos: 0 };
+    await loadBulkGradingCurrent();
+  }
+  else if (action === 'set-decision') {
+    const g = state.gradingSub; const gr = g.grading[g.step];
+    gr.decision = el.dataset.decision;
+    if (gr.decision === 'correct') gr.awarded = gr.maxPoints;
+    else if (gr.decision === 'incorrect') gr.awarded = 0;
+    else if (gr.decision === 'partial') gr.awarded = Math.round((gr.maxPoints / 2) * 10) / 10;
+    render();
+  }
+  else if (action === 'grading-prev') {
+    const g = state.gradingSub;
+    if (g.bulkMode) { const idx = prevReviewIndex(g.exam.questions, g.step); if (idx !== -1) g.step = idx; }
+    else { g.step -= 1; }
+    render();
+  }
+  else if (action === 'grading-next') {
+    const g = state.gradingSub;
+    if (g.bulkMode) { const idx = nextReviewIndex(g.exam.questions, g.step); if (idx !== -1) g.step = idx; }
+    else { g.step += 1; }
+    render();
+  }
+  else if (action === 'close-grading') {
+    state.bulkGrading = null; state.gradingSub = null; state.screen = 'admin-exam-manage'; render();
+  }
+  else if (action === 'finalize-grading') {
+    const g = state.gradingSub;
+    if (g.grading.some(x => !x.decision)) { setMsg('error', '모든 문항을 채점해주세요 (정답/오답/부분정답 중 선택).'); render(); return; }
+    const commentEl = document.getElementById('grading-comment');
+    const comment = commentEl ? commentEl.value : g.comment;
+    const totalScore = Math.round(g.grading.reduce((sum, x) => sum + x.awarded, 0));
+    const sub = g.sub;
+    sub.gradingDetail = g.grading.map(x => ({ decision: x.decision, awarded: x.awarded, maxPoints: x.maxPoints }));
+    sub.score = totalScore; sub.graded = true; sub.teacherComment = comment; sub.gradedAt = Date.now();
+    const ok = await dbSet(`submission:${sub.id}`, sub);
+    if (!ok) { setMsg('error', '저장에 실패했어요.'); render(); return; }
+
+    if (state.bulkGrading) {
+      state.bulkGrading.pos += 1;
+      setMsg('success', '채점을 저장했어요. 다음 학생으로 이동해요.');
+      await loadBulkGradingCurrent();
+    } else {
+      setMsg('success', '채점을 완료했어요.');
+      const examId = g.examId; state.gradingSub = null;
+      await openManageExam(examId);
+    }
+  }
+  else if (action === 'export-csv') { exportCsv(el.dataset.id); }
+  else if (action === 'start-exam') { await startExam(el.dataset.id); }
+  else if (action === 'view-graded-result') { await viewGradedResult(el.dataset.id); }
+  else if (action === 'save-subadmin-subjects') { await saveSubAdminSubjects(el.dataset.username); }
+  else if (action === 'confirm-submit-exam') {
+    const container = document.querySelector('[data-form="submit-exam"]');
+    state.pendingSubmitConfirm = false;
+    if (container) await handleSubmitExam(container);
+  }
+  else if (action === 'cancel-submit-exam') {
+    state.pendingSubmitConfirm = false;
+    render();
+  }
+  else if (action === 'do-submit') {
+    const container = el.closest('[data-form]');
+    if (!container || !validateContainer(container)) return;
+    const kind = el.dataset.targetForm;
+    if (kind === 'submit-exam' && state.activeExam && state.activeExam.type === 'performance' && !state.pendingSubmitConfirm) {
+      state.pendingSubmitConfirm = true;
+      render();
+      return;
+    }
+    await submitFormByKind(kind, container);
+  }
+}
+
+async function submitFormByKind(kind, container) {
+  const fd = collectFormData(container);
+  state.message = null;
+  if (kind === 'student-login') await handleStudentLogin(fd);
+  else if (kind === 'admin-setup') await handleAdminSetup(fd);
+  else if (kind === 'admin-login') await handleAdminLogin(fd);
+  else if (kind === 'school-classes') await handleSchoolClasses(fd);
+  else if (kind === 'create-subadmin') await handleCreateSubAdmin(fd);
+  else if (kind === 'exam-basic') await handleExamBasicNext(fd);
+  else if (kind === 'submit-exam') {
+    state.pendingSubmitConfirm = false;
+    await handleSubmitExam(container);
+  }
+}
+
+function onEnterKey(e) {
+  if (e.key !== 'Enter') return;
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT' && tag !== 'SELECT') return;
+  const container = e.target.closest('[data-form]');
+  if (!container) return;
+  e.preventDefault();
+  const btn = container.querySelector('[data-action="do-submit"]');
+  if (btn) btn.click();
+}
+
+/* ---- handlers ---- */
+async function handleStudentLogin(fd) {
+  const grade = fd.get('grade'), cls = fd.get('cls'), num = fd.get('num'), password = fd.get('password');
+  const key = studentKey(grade, cls, num);
+  const existing = await dbGet(`student:${key}`);
+  if (!existing) {
+    const ok = await dbSet(`student:${key}`, { password, createdAt: Date.now() });
+    if (!ok) { setMsg('error', '계정 생성에 실패했어요. 다시 시도해주세요.'); render(); return; }
+  } else if (existing.password !== password) {
+    setMsg('error', '비밀번호가 일치하지 않아요.'); render(); return;
+  }
+  state.currentStudent = { key, grade, cls, num };
+  state.screen = 'student-subject'; render();
+}
+
+async function refreshExamsWithSubs() {
+  await loadAllExams();
+  const s = state.currentStudent; if (!s) return;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  for (const exam of state.exams) {
+    const subs = await loadSubmissionsForStudentExam(exam.id, sKey);
+    exam._studentSubs = exam._studentSubs || {};
+    exam._studentSubs[sKey] = subs;
+  }
+}
+
+async function handleAdminSetup(fd) {
+  const username = (fd.get('username') || '').trim();
+  const password = fd.get('password'), password2 = fd.get('password2');
+  if (!username) { setMsg('error', '아이디를 입력해주세요.'); render(); return; }
+  if (password !== password2) { setMsg('error', '비밀번호가 서로 달라요.'); render(); return; }
+  const existing = await dbGet(`admin:${username}`);
+  if (existing) { setMsg('error', '이미 존재하는 아이디예요.'); render(); return; }
+  const saved = await dbSet(`admin:${username}`, { username, password, role: 'super', permissions: { all: true }, createdAt: Date.now() });
+  if (!saved) {
+    setMsg('error', '계정 저장에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.'); render(); return;
+  }
+  state.currentAdmin = { username, role: 'super', permissions: { all: true } };
+  await loadSchoolConfig(); await loadAllExams();
+  state.screen = 'admin-dashboard'; render();
+}
+
+async function handleAdminLogin(fd) {
+  const username = (fd.get('username') || '').trim();
+  const password = fd.get('password');
+  const rec = await dbGet(`admin:${username}`);
+  if (!rec || rec.password !== password) { setMsg('error', '아이디 또는 비밀번호가 올바르지 않아요.'); render(); return; }
+  state.currentAdmin = { username: rec.username, role: rec.role, permissions: rec.permissions || {} };
+  await loadSchoolConfig(); await loadAllExams();
+  state.screen = 'admin-dashboard'; render();
+}
+
+async function handleSchoolClasses(fd) {
+  const classConfig = {};
+  ['1', '2', '3'].forEach(g => {
+    classConfig[g] = { classes: Math.max(1, Number(fd.get(`classes_${g}`) || 1)), students: Math.max(1, Number(fd.get(`students_${g}`) || 1)) };
+  });
+  const ok = await dbSet('config:school', { subjects: state.schoolConfig.subjects, classConfig });
+  if (!ok) { setMsg('error', '저장에 실패했어요.'); render(); return; }
+  state.schoolConfig.classConfig = classConfig;
+  setMsg('success', '학급 구성을 저장했어요.'); render();
+}
+
+async function handleCreateSubAdmin(fd) {
+  const username = (fd.get('username') || '').trim(), password = fd.get('password');
+  if (!username) { setMsg('error', '아이디를 입력해주세요.'); render(); return; }
+  const existing = await dbGet(`admin:${username}`);
+  if (existing) { setMsg('error', '이미 존재하는 아이디예요.'); render(); return; }
+  await dbSet(`admin:${username}`, { username, password, role: 'sub', permissions: { subjects: [] }, createdAt: Date.now() });
+  setMsg('success', '서브 관리자를 발급했어요. 아래에서 담당 과목을 배정해주세요.');
+  await loadSubAdmins(); render();
+}
+
+async function saveSubAdminSubjects(username) {
+  const checks = app.querySelectorAll(`[data-role="subadmin-subject"][data-username="${CSS.escape(username)}"]`);
+  const subjects = Array.from(checks).filter(c => c.checked).map(c => c.value);
+  const rec = await dbGet(`admin:${username}`);
+  if (!rec) return;
+  rec.permissions = { subjects };
+  await dbSet(`admin:${username}`, rec);
+  setMsg('success', `${username}의 담당 과목을 저장했어요.`);
+  await loadSubAdmins(); render();
+}
+
+async function handleExamBasicNext(fd) {
+  const d = state.draftExam;
+  d.title = fd.get('title'); d.subject = fd.get('subject'); d.type = fd.get('type');
+  const targeting = {};
+  fd.getAll('gradeToggle').forEach(g => { targeting[g] = fd.getAll(`class_${g}`); });
+  d.targeting = targeting;
+  d.periodStart = fd.get('periodStart'); d.periodEnd = fd.get('periodEnd');
+  d.timerMinutes = Number(fd.get('timerMinutes') || 0);
+  d.step = 0; render();
+}
+
+async function loadBulkGradingCurrent() {
+  const bg = state.bulkGrading;
+  while (bg.pos < bg.queue.length) {
+    const subId = bg.queue[bg.pos];
+    const sub = await dbGet(`submission:${subId}`);
+    if (!sub || sub.graded) { bg.pos += 1; continue; }
+    const exam = state.exams.find(e => e.id === sub.examId);
+    const grading = buildGradingSuggestions(exam, sub);
+    const startIdx = firstReviewIndex(exam.questions);
+    if (startIdx === -1) {
+      const totalScore = Math.round(grading.reduce((s, x) => s + x.awarded, 0));
+      sub.gradingDetail = grading.map(x => ({ decision: x.decision, awarded: x.awarded, maxPoints: x.maxPoints }));
+      sub.score = totalScore; sub.graded = true; sub.teacherComment = ''; sub.gradedAt = Date.now();
+      await dbSet(`submission:${subId}`, sub);
+      bg.pos += 1;
+      continue;
+    }
+    state.gradingSub = { subId, examId: sub.examId, sub, exam, grading, step: startIdx, comment: '', bulkMode: true };
+    state.screen = 'admin-grade-submission';
+    render();
+    return;
+  }
+  const examId = state.viewExamId;
+  state.bulkGrading = null; state.gradingSub = null;
+  setMsg('success', '전체 채점을 완료했어요.');
+  await openManageExam(examId);
+}
+
+async function openManageExam(examId) {
+  const exam = state.exams.find(e => e.id === examId);
+  if (!exam) return;
+  exam._allSubs = await loadSubmissionsForExam(examId);
+  state.viewExamId = examId; state.screen = 'admin-exam-manage'; render();
+}
+
+function buildGradingSuggestions(exam, sub) {
+  return exam.questions.map((q, i) => {
+    if (sub.gradingDetail && sub.gradingDetail[i]) return { ...sub.gradingDetail[i] };
+    const pq = sub.perQuestion[i];
+    const maxPoints = q.points || 0;
+    if (pq.type === 'submission') return { decision: null, awarded: 0, maxPoints };
+    if (pq.type === 'essay') {
+      if (!q.rules || !q.rules.length) return { decision: null, awarded: 0, maxPoints };
+      const matched = q.rules.filter(r => keywordMatch(pq.text, r.keywords, 'any'));
+      const sum = matched.reduce((s, r) => s + Number(r.points || 0), 0);
+      const awarded = Math.min(sum, maxPoints);
+      const decision = awarded <= 0 ? 'incorrect' : (awarded >= maxPoints ? 'correct' : 'partial');
+      return { decision, awarded, maxPoints };
+    }
+    return { decision: pq.isCorrect ? 'correct' : 'incorrect', awarded: pq.isCorrect ? maxPoints : 0, maxPoints };
+  });
+}
+
+async function openGrading(subId) {
+  const sub = await dbGet(`submission:${subId}`);
+  if (!sub) return;
+  const exam = state.exams.find(e => e.id === sub.examId);
+  const grading = buildGradingSuggestions(exam, sub);
+  state.gradingSub = { subId, examId: sub.examId, sub, exam, grading, step: 0, comment: sub.teacherComment || '', bulkMode: false };
+  state.screen = 'admin-grade-submission'; render();
+}
+
+function exportCsv(examId) {
+  const exam = state.exams.find(e => e.id === examId);
+  if (!exam || !exam._allSubs) return;
+  let csv = '학생,회차,채점상태,점수,총점,코멘트,제출시각\n';
+  exam._allSubs.forEach(s => {
+    csv += `${s.studentKey},${s.attempt},${s.graded ? '완료' : '대기'},${s.graded ? s.score : ''},${examTotalPoints(exam)},"${(s.teacherComment || '').replace(/"/g, '""')}",${fmtDate(s.submittedAt)}\n`;
+  });
+  const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${exam.title}_결과.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function startExam(examId) {
+  const exam = state.exams.find(e => e.id === examId);
+  if (!exam) return;
+  const s = state.currentStudent;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  const subs = await loadSubmissionsForStudentExam(examId, sKey);
+  if (subs.length >= 1) { setMsg('error', '이미 응시한 시험이에요.'); render(); return; }
+  if (!nowInPeriod(exam.period)) { setMsg('error', '지금은 응시 기간이 아니에요.'); render(); return; }
+  state.activeExam = exam; state.activeExam._attemptNumber = 1; state.pendingSubmitConfirm = false;
+  state.screen = 'student-exam'; render();
+}
+
+function startTimer() {
+  clearInterval(state.timerInterval);
+  state.timerRemaining = state.activeExam.timerMinutes * 60;
+  updateTimerDisplay();
+  state.timerInterval = setInterval(() => {
+    state.timerRemaining -= 1; updateTimerDisplay();
+    if (state.timerRemaining <= 0) {
+      clearInterval(state.timerInterval);
+      const btn = app.querySelector('[data-form="submit-exam"] [data-action="do-submit"]');
+      if (btn) btn.click();
+    }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const el = document.getElementById('timer-display'); if (!el) return;
+  const m = Math.max(0, Math.floor(state.timerRemaining / 60));
+  const sec = Math.max(0, state.timerRemaining % 60);
+  el.textContent = `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+
+async function handleSubmitExam(container) {
+  clearInterval(state.timerInterval);
+  const exam = state.activeExam;
+  const answers = [];
+  for (let i = 0; i < exam.questions.length; i++) {
+    const q = exam.questions[i];
+    if (q.type === 'objective') {
+      const checked = container.querySelector(`input[name="q${i}_choice"]:checked`);
+      answers.push({ choice: checked ? Number(checked.value) : null });
+    } else if (q.type === 'essay') {
+      const ta = container.querySelector(`textarea[name="q${i}_text"]`);
+      answers.push({ text: ta ? ta.value : '' });
+    } else {
+      const ta = container.querySelector(`textarea[name="q${i}_text"]`);
+      const fileInput = container.querySelector(`input[data-role="submission-file"][data-idx="${i}"]`);
+      let file = null;
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const f = fileInput.files[0];
+        if (f.size > 600 * 1024) { setMsg('error', `문항 ${i + 1}의 첨부파일이 너무 커요. 600KB 이하 파일을 사용해주세요.`); render(); return; }
+        const data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(f);
+        });
+        file = { name: f.name, data };
+      }
+      answers.push({ text: ta ? ta.value : '', file });
+    }
+  }
+  const { perQuestion } = gradeAnswers(exam, answers);
+  const s = state.currentStudent;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  const attempt = exam._attemptNumber || 1;
+  const subId = `${exam.id}__${sKey}__${attempt}`;
+  const submission = {
+    id: subId, examId: exam.id, studentKey: sKey, attempt,
+    answers, perQuestion, score: null, graded: false,
+    gradingDetail: null, teacherComment: '', submittedAt: Date.now(), gradedAt: null,
+  };
+  await dbSet(`submission:${subId}`, submission);
+  setMsg('success', '제출했어요. 선생님이 채점을 완료하면 "채점 완료" 탭에서 결과를 볼 수 있어요.');
+  await refreshExamsWithSubs();
+  state.screen = 'student-dashboard'; render();
+}
+
+async function viewGradedResult(examId) {
+  const exam = state.exams.find(e => e.id === examId);
+  const s = state.currentStudent;
+  const sKey = studentKey(s.grade, s.cls, s.num);
+  const subs = await loadSubmissionsForStudentExam(examId, sKey);
+  const graded = subs.filter(x => x.graded);
+  if (!graded.length) return;
+  state.activeExam = exam; state.activeSubmission = graded[graded.length - 1];
+  state.screen = 'student-result'; render();
+}
+
+/* ---------- init ---------- */
+app.addEventListener('keydown', onEnterKey);
+render();
+</script>
+</body>
+</html>
