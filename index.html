@@ -523,6 +523,8 @@ const state = {
   timerInterval: null,
   timerRemaining: null,
   subAdmins: [],
+  students: [],
+  pendingResetStudentKey: null,
 };
 
 /* ---------- storage helpers (Firebase Firestore) ---------- */
@@ -658,6 +660,18 @@ async function loadSubAdmins() {
   for (const k of keys) { const v = await dbGet(k); if (v && v.role === 'sub') list.push(v); }
   state.subAdmins = list;
 }
+async function loadAllStudents() {
+  const keys = await dbList('student:');
+  const list = [];
+  for (const k of keys) {
+    const v = await dbGet(k);
+    if (!v) continue;
+    const [grade, cls, num] = k.slice('student:'.length).split('-');
+    list.push({ key: k.slice('student:'.length), grade, cls, num: Number(num), createdAt: v.createdAt });
+  }
+  list.sort((a, b) => a.grade - b.grade || a.cls - b.cls || a.num - b.num);
+  state.students = list;
+}
 
 /* ---------- exam helpers ---------- */
 function examMatchesStudent(exam, student) {
@@ -763,6 +777,7 @@ function bodyForScreen() {
     case 'admin-exam-manage': return adminExamManageScreen();
     case 'admin-grade-submission': return adminGradeSubmissionScreen();
     case 'admin-subadmins': return adminSubAdminsScreen();
+    case 'admin-students': return adminStudentsScreen();
     default: return homeScreen();
   }
 }
@@ -1031,6 +1046,7 @@ function adminDashboardScreen() {
       <div class="actions-row">
         <button class="primary" data-action="go-school-settings">학교 설정</button>
         <button class="ghost" data-action="go-subadmins">서브 관리자 관리</button>
+        <button class="ghost" data-action="go-students">학생 계정 관리</button>
       </div>
       <p class="hint">통합 관리자는 시험을 직접 만들지 않아요. 서브 관리자에게 과목을 배정하면, 서브 관리자가 시험을 출제해요.</p>
     </div>`;
@@ -1129,6 +1145,48 @@ function adminSubAdminsScreen() {
     <h3>발급된 서브 관리자</h3>
     <div class="list">${rows}</div>
   </div>`;
+}
+
+/* ---- ADMIN STUDENTS ---- */
+function adminStudentsScreen() {
+  const byGrade = {};
+  for (const s of state.students) {
+    (byGrade[s.grade] = byGrade[s.grade] || []).push(s);
+  }
+  const grades = Object.keys(byGrade).sort();
+  const groups = grades.map(g => {
+    const rows = byGrade[g].map(s => `
+      <div class="exam-card">
+        <div class="exam-card-main">
+          <h3>${escapeHtml(s.grade)}학년 ${escapeHtml(s.cls)}반 ${s.num}번</h3>
+          <p class="meta">계정 생성일: ${fmtDate(s.createdAt)}</p>
+        </div>
+        <div class="exam-card-actions"><button class="ghost small" data-action="reset-student-password" data-key="${escapeHtml(s.key)}">비밀번호 초기화</button></div>
+      </div>`).join('');
+    return `<h3>${escapeHtml(g)}학년</h3><div class="list">${rows}</div>`;
+  }).join('') || `<div class="empty">아직 로그인한 학생이 없어요.</div>`;
+
+  const target = state.students.find(s => s.key === state.pendingResetStudentKey);
+  const modal = target ? `
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <h3>비밀번호를 초기화할까요?</h3>
+        <p class="hint" style="margin:0;">${escapeHtml(target.grade)}학년 ${escapeHtml(target.cls)}반 ${target.num}번 학생의 현재 비밀번호가 삭제돼요. 이 학생은 다음 로그인 시 입력하는 비밀번호가 새 비밀번호로 설정돼요.</p>
+        <div class="modal-actions">
+          <button type="button" class="ghost" data-action="cancel-reset-student">취소</button>
+          <button type="button" class="primary" data-action="confirm-reset-student">초기화하기</button>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `
+  <div class="card wide">
+    <button class="back" data-action="go-admin-dashboard">← 목록으로</button>
+    <h2>학생 계정 관리</h2>
+    <p class="hint">학생이 비밀번호를 잊었거나 다른 학생이 임의로 비밀번호를 정해버린 것 같으면, 아래에서 초기화할 수 있어요. 초기화하면 그 학생은 다음 로그인 시 입력하는 비밀번호가 새 비밀번호로 등록돼요.</p>
+    ${groups}
+  </div>
+  ${modal}`;
 }
 
 /* ---- ADMIN EXAM CREATE (마법사) ---- */
@@ -1470,6 +1528,17 @@ async function onAction(e) {
   else if (action === 'go-admin-dashboard') { await loadAllExams(); state.screen = 'admin-dashboard'; render(); }
   else if (action === 'go-school-settings') { await loadSchoolConfig(); state.screen = 'admin-school-settings'; render(); }
   else if (action === 'go-subadmins') { await loadSchoolConfig(); await loadSubAdmins(); state.screen = 'admin-subadmins'; render(); }
+  else if (action === 'go-students') { await loadAllStudents(); state.screen = 'admin-students'; render(); }
+  else if (action === 'reset-student-password') { state.pendingResetStudentKey = el.dataset.key; render(); }
+  else if (action === 'cancel-reset-student') { state.pendingResetStudentKey = null; render(); }
+  else if (action === 'confirm-reset-student') {
+    const key = state.pendingResetStudentKey;
+    await dbDelete(`student:${key}`);
+    state.pendingResetStudentKey = null;
+    await loadAllStudents();
+    setMsg('success', '비밀번호를 초기화했어요. 학생은 다음 로그인 시 새 비밀번호를 설정할 수 있어요.');
+    render();
+  }
   else if (action === 'add-subject') {
     const input = document.getElementById('new-subject-input');
     const name = (input.value || '').trim();
